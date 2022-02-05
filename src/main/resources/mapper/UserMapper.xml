@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--namespace属性：用于指定当前的映射文件和哪个接口进行映射，需要指定接口的文件路径，需要标注包的完整路径接口-->
+<mapper namespace="com.kech.store.mapper.UserMapper">
+    <!-- resultMap最终还是要将结果映射到pojo上，type就是指定映射到哪一个pojo -->
+    <!-- id：设置ResultMap的id -->
+    <resultMap type="com.kech.store.entity.User" id="UserResultMap">
+        <!-- 定义主键 ,非常重要。如果是多个字段,则定义多个id -->
+        <!-- property：主键在pojo中的属性名 -->
+        <!-- column：主键在数据库中的列名 -->
+        <id property="uid" column="uid" />
+
+        <!-- 定义普通属性 -->
+        <result property="username" column="username" />
+        <result property="password" column="password" />
+        <result property="salt" column="salt" />
+        <result property="phone" column="phone" />
+        <result property="email" column="email" />
+        <result property="gender" column="gender" />
+        <result property="avatar" column="avatar" />
+        <result property="isDelete" column="is_delete" />
+        <result property="createdUser" column="created_user" />
+        <result property="createdTime" column="created_time" />
+        <result property="modifiedUser" column="modified_user" />
+        <result property="modifiedTime" column="modified_time" />
+    </resultMap>
+<!--id属性：表示映射接口中方法的名称，直接在标签的内容来编写sql语句-->
+<!--useGeneratedKeys自增 keyProperty 主键   -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="uid">
+        INSERT INTO t_user (
+            username,
+            password,
+            salt,
+            phone,
+            email,
+            gender,
+            avatar,
+            is_delete,
+            created_user,
+            created_time,
+            modified_user,
+            modified_time
+    ) VALUES (
+            #{username},
+            #{password},
+            #{salt},
+            #{phone},
+            #{email},
+            #{gender},
+            #{avatar},
+            #{isDelete},
+            #{createdUser},
+            #{createdTime},
+            #{modifiedUser},
+            #{modifiedTime}
+    )
+    </insert>
+
+<!--select语句在执行的时候，查询结构是一个对象，多个对象。    -->
+
+<!--   resultType:表示查询的结果集的类型，只需要指定对应的映射类型，并且包含完整包接口:resultType = "com.kech.store.entity.User"-->
+<!--   resultMap：标签当表的资源和类的对象属性的字段名称不一致时，来自定义查询结果集的映射规则-->
+    <select id="findByUsername" resultMap="UserResultMap">
+        SELECT * FROM t_user WHERE username = #{username}
+    </select>
+
+    <update id="updatePasswordByUid">
+        UPDATE t_user SET
+        password = #{password},
+        modified_user = #{modifiedUser},
+        modified_time = #{modifiedTime}
+        where uid = ${uid}
+    </update>
+
+    <select id="findByUid" resultMap="UserResultMap">
+        SELECT * FROM t_user WHERE uid = #{uid}
+    </select>
+
+    <update id="updateInfoByUid">
+        UPDATE  t_user
+        SET
+        <!-- if表示条件判断标签，test接收的是一个返回值为boolean类型的条件，如果test条件的结果为true则执行if标签内部的语句-->
+        <if test="phone!=null">phone = #{phone},</if>
+        <if test="phone!=null">email = #{email},</if>
+        <if test="phone!=null">gender = #{gender},</if>
+            modified_user = #{modifiedUser},
+            modified_time = #{modifiedTime}
+        WHERE uid = #{uid}
+    </update>
+
+    <update id="updateAvatarByUid">
+        UPDATE t_user
+        SET
+            avatar = #{avatar},
+            modified_user = #{modifiedUser},
+            modified_time = #{modifiedTime}
+        WHERE
+            uid = #{uid}
+    </update>
+</mapper>
