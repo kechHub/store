@@ -48,6 +48,12 @@ public class BaseContorller {
             result.setState(6003);
         } else if (e instanceof FileUploadException) {
             result.setState(6004);
+        } else if (e instanceof AddressNotFoundException) {
+            result.setState(7000);
+            result.setMessage("收货地址数据非法访问的异常");
+        } else if (e instanceof AccessDeniedException) {
+            result.setState(7001);
+            result.setMessage("插入数据时产生未知的异常");
         }
         return result;
     }

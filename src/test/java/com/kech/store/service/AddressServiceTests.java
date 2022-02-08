@@ -22,4 +22,10 @@ public class AddressServiceTests {
         address.setName("男朋友");
         addressService.addNewAddress(6,"管理员", address);
     }
+
+    @Test
+    public void delete() {
+        addressService.delete(2, 6, "管理员");
+    }
+
 }
